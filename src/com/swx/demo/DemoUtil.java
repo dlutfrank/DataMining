@@ -20,7 +20,6 @@ public class DemoUtil {
 
 		PageDownload pageDownload = new PageDownload();
 		pageDownload.downloadPage(ZhongChou.URL, new PageDownloadCallback() {
-
 			@Override
 			public void OnPageDownloadFinish(int code, String content) {
 				if (code != PageDownload.DOWNLOAD_OK) {
