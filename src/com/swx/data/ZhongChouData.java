@@ -68,6 +68,31 @@ public class ZhongChouData {
 	public static final String ITEM_PROGRESS_CLASS = "thDiv";
 	public static final String ITEM_DETAIL_VALUE_CLASS = "ftP";
 
+	public static final String ITEM_SPLIT_TAG = "||";
+	public static final String CATEGORY_SPLITE_TAG = "    ";
+
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(title);
+		sb.append(ITEM_SPLIT_TAG);
+		sb.append(url);
+		sb.append(ITEM_SPLIT_TAG);
+		sb.append(desc);
+		sb.append(ITEM_SPLIT_TAG);
+		for (String s : category) {
+			sb.append(s);
+			sb.append(CATEGORY_SPLITE_TAG);
+		}
+		sb.append(ITEM_SPLIT_TAG);
+		sb.append(money);
+		sb.append(ITEM_SPLIT_TAG);
+		sb.append(votes);
+		sb.append(ITEM_SPLIT_TAG);
+		sb.append(progress);
+		sb.append("\n");
+		return sb.toString();
+	}
+
 	public static List<ZhongChouData> parseData(Document doc) {
 		List<ZhongChouData> zcdl = new ArrayList<ZhongChouData>();
 		Elements els = doc.getElementsByClass(ITEM_TAG_CLASS);

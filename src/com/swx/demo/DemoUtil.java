@@ -1,70 +1,62 @@
 package com.swx.demo;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
-import com.swx.data.ZhongChou;
-import com.swx.util.Callback;
-import com.swx.util.DataAnalyse;
-import com.swx.util.PageDownload;
-import com.swx.util.PageDownload.PageDownloadCallback;
-import com.swx.util.Parse;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import com.swx.data.ZhongChouData;
 
 public class DemoUtil {
-	static String URL_INPUT = "http://www.jb51.net/article/36797.htm";
+	public static final int PAGE_COUNT = 246;
 
 	public static void main(String[] args) {
-		String url = URL_INPUT;
+		String url = null;
 		if (args.length > 2) {
 			url = args[1];
 		}
-
-		PageDownload pageDownload = new PageDownload();
-		pageDownload.downloadPage(ZhongChou.URL, new PageDownloadCallback() {
-			@Override
-			public void OnPageDownloadFinish(int code, String content) {
-				if (code != PageDownload.DOWNLOAD_OK) {
-					return;
-				}
-				DataAnalyse da = new DataAnalyse(content);
-				// da.analyzeContent(new Callback<List<String>>() {
-				//
-				// @Override
-				// public void onSuccess(List<String> result) {
-				// System.out.println(result);
-				// }
-				//
-				// @Override
-				// public void onFaild(int code, String msg) {
-				//
-				// }
-				// }, ZhongChou.REGEX2,0);
-				da.analyzeContent(new Callback<List<ZhongChou>>() {
-
-					@Override
-					public void onSuccess(List<ZhongChou> result) {
-						System.out.println(result);
-					}
-
-					@Override
-					public void onFaild(int code, String msg) {
-
-					}
-				}, new Parse<ZhongChou>() {
-
-					@Override
-					public ZhongChou parse(String... strArray) {
-						ZhongChou zc = null;
-						if (strArray != null && strArray.length == 2) {
-							if(strArray[0] != null) {
-								zc = new ZhongChou();
-								zc.url = strArray[0];
-								zc.title = strArray[1];
-							}
-						}
-						return zc;
-					}
-				}, ZhongChou.REGEX, 2,3);
+		File file = new File("zhongchou.txt");
+		FileWriter fw = null;
+		try {
+			fw = new FileWriter(file);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		for (int i = 1; i <= PAGE_COUNT; i++) {
+			url = ZhongChouData.URL_PREFIX + i;
+			getZhongChouData(url, fw);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
-		});
+			System.out.println("page: " + i);
+		}
+		if (fw != null) {
+			try {
+				fw.flush();
+				fw.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	private static void getZhongChouData(String url, FileWriter fw) {
+		try {
+			Document doc = Jsoup.connect(url).timeout(3000).get();
+			List<ZhongChouData> datas = ZhongChouData.parseData(doc);			
+			if (datas != null) {
+				for (ZhongChouData zc : datas) {
+					fw.write(zc.toString());
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
