@@ -11,7 +11,7 @@ import org.jsoup.nodes.Document;
 import com.swx.data.ZhongChouData;
 
 public class DemoUtil {
-	public static final int PAGE_COUNT = 2;
+	public static final int PAGE_COUNT = 246;
 
 	public static void main(String[] args) {
 		String url = null;
