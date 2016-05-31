@@ -15,10 +15,7 @@ public class DemoUtil {
 
 	public static void main(String[] args) {
 		String url = null;
-		if (args.length > 2) {
-			url = args[1];
-		}
-		File file = new File("zhongchou1.txt");
+		File file = new File("zhongchou.txt");
 		FileWriter fw = null;
 		try {
 			fw = new FileWriter(file);

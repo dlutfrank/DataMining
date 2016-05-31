@@ -29,8 +29,7 @@ public class DataAnalyse {
 		}
 		List<T> results = new ArrayList<T>();
 		Pattern p = Pattern.compile(regex);
-		Matcher m = p.matcher(content);
-		String s = null;
+		Matcher m = p.matcher(content);		
 		String sa[] = new String[indexs.length];
 		T tmp = null;
 		while (m.find()) {
