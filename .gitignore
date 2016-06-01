@@ -5,7 +5,7 @@ bin/
 gen/
 *.txt
 .gradle
-.settings
+.settings/
 .classpath
 .project
 /build/
