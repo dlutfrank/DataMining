@@ -1,0 +1,16 @@
+apply plugin:'java'
+
+repositories {
+	jcenter()
+	
+	flatDir(dirs: "$projectDir/libs")	
+    //maven {
+        //url "http:\\maven.petrikainulainen.net\repo"
+    //}
+    
+}
+
+dependencies {
+    compile 'org.jsoup:jsoup:1.9.2'
+    //compile 'us.codecraft:webmagic-core:0.5.3'
+}

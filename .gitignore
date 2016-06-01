@@ -4,3 +4,8 @@ lib/
 bin/
 gen/
 *.txt
+.gradle
+.settings
+.classpath
+.project
+/build/
