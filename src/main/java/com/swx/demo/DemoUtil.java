@@ -1,5 +1,6 @@
 package com.swx.demo;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,8 +18,9 @@ public class DemoUtil {
 		String url = null;
 		File file = new File("zhongchou.txt");
 		FileWriter fw = null;
+		BufferedWriter bf = null;
 		try {
-			fw = new FileWriter(file);
+			bf = new BufferedWriter(new FileWriter(file));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -29,7 +31,7 @@ public class DemoUtil {
 				datas = getZhongChouData(url);
 				if (datas != null) {
 					for (ZhongChouData zc : datas) {
-						fw.write(zc.toString());
+						bf.write(zc.toString());
 					}
 				}
 				Thread.sleep(1000);
@@ -40,10 +42,10 @@ public class DemoUtil {
 			}
 			System.out.println("page: " + i);
 		}
-		if (fw != null) {
+		if (bf != null) {
 			try {
-				fw.flush();
-				fw.close();
+				bf.flush();
+				bf.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

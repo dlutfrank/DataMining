@@ -1,4 +1,4 @@
-package com.swx;
+package com.swx.schedule;
 
 import java.util.LinkedList;
 

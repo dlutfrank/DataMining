@@ -1,6 +1,6 @@
-package com.swx;
+package com.swx.download;
 
-import com.swx.util.Callback;
+import com.swx.common.Callback;
 
 public interface IDownloadPage {
 	boolean isUrlVaild(String url);

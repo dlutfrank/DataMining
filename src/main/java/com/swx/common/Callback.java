@@ -1,4 +1,4 @@
-package com.swx.util;
+package com.swx.common;
 
 public interface Callback<T> {
 	void onSuccess(T result);

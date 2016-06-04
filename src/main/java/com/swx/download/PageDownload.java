@@ -1,4 +1,4 @@
-package com.swx.util;
+package com.swx.download;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
