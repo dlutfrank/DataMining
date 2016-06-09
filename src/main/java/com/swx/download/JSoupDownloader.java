@@ -7,10 +7,17 @@ import org.jsoup.nodes.Document;
 
 import com.swx.common.Callback;
 import com.swx.common.ErrorCode;
+import com.swx.filter.UrlFilter;
 
-public class JSoupDownloader extends PageDownloader {
+public class JSoupDownloader implements IPageDownload<Document> {
+	private UrlFilter mDefaultUrlFilter;
+
+	public JSoupDownloader() {
+		mDefaultUrlFilter = new UrlFilter();
+	}
+
 	public void downloadPage(String url, Callback<Document> callback) {
-		if (!isUrlVaild(url)) {
+		if (!mDefaultUrlFilter.isValidate(url)) {
 			if (callback != null) {
 				callback.onFaild(ErrorCode.PAGE_DOWNLOAD_URL_INVAILD, null);
 			}
