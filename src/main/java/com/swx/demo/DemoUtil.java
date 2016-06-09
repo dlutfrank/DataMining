@@ -16,8 +16,7 @@ public class DemoUtil {
 
 	public static void main(String[] args) {
 		String url = null;
-		File file = new File("zhongchou.txt");
-		FileWriter fw = null;
+		File file = new File("zhongchou.txt");		
 		BufferedWriter bf = null;
 		try {
 			bf = new BufferedWriter(new FileWriter(file));

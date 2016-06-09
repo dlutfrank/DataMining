@@ -19,10 +19,10 @@ public class DataAnalyse {
 		this.content = content;
 	}
 
-	public <T> void analyzeContent(Callback<List<T>> callback, Parse<T> iparse,
+	public <T> void analyzeContent(Callback<List<T>> callback, StringsParse<T> iparse,
 			String regex, int... indexs) {
 		if (content == null || regex == null) {
-			callback.onFaild(-1, null);
+			callback.onFaild(ErrorCode.PARAM_INVAILD, null);
 			return;
 		}
 		if (indexs == null || indexs.length == 0) {
@@ -30,7 +30,7 @@ public class DataAnalyse {
 		}
 		List<T> results = new ArrayList<T>();
 		Pattern p = Pattern.compile(regex);
-		Matcher m = p.matcher(content);		
+		Matcher m = p.matcher(content);
 		String sa[] = new String[indexs.length];
 		T tmp = null;
 		while (m.find()) {
@@ -51,7 +51,7 @@ public class DataAnalyse {
 	public void analyzeContent(Callback<List<String>> callback, String regex,
 			int... indexs) {
 		if (content == null || regex == null) {
-			callback.onFaild(-1, null);
+			callback.onFaild(ErrorCode.PARAM_INVAILD, null);
 			return;
 		}
 		if (indexs == null || indexs.length == 0) {
