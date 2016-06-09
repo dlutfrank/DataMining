@@ -1,10 +1,12 @@
 package com.swx;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.swx.filter.UrlFilter;
 import com.swx.schedule.Scheduler;
 
 public class SiteProcess {
@@ -12,25 +14,25 @@ public class SiteProcess {
 	private int threadCount;
 	private ExecutorService threadPool;
 	private Scheduler urlScheduler;
-	private String targetUrlRegex;
-	private String assistUrlRegex;
+	private List<UrlFilter> targetUrlFilter = new ArrayList<UrlFilter>();
+	private List<UrlFilter> assistUrlFilter = new ArrayList<UrlFilter>();
 
 	public static class Builder {
 		private int count = DEFAULT_THREAD_COUNT;
 		private String[] urls;
-		private String targetRegex;
-		private String assistRegex;
+		private String[] targetRegex;
+		private String[] assistRegex;
 
 		public Builder(String... urls) {
 			this.urls = urls;
 		}
 
-		public Builder targetUrl(String regex) {
+		public Builder targetUrl(String... regex) {
 			targetRegex = regex;
 			return this;
 		}
 
-		public Builder assistUrl(String regex) {
+		public Builder assistUrl(String... regex) {
 			assistRegex = regex;
 			return this;
 		}
@@ -43,8 +45,20 @@ public class SiteProcess {
 		public SiteProcess create() {
 			SiteProcess sp = new SiteProcess(count);
 			sp.initSeeds(urls);
-			sp.setTargetUrls(targetRegex);
-			sp.setAssistUrls(assistRegex);
+			if (targetRegex != null && targetRegex.length > 0) {
+				for (String target : targetRegex) {
+					sp.addTargetFilter(new UrlFilter(target));
+				}
+			} else {
+				sp.addTargetFilter(new UrlFilter());
+			}
+			if (assistRegex != null && assistRegex.length > 0) {
+				for (String assist : assistRegex) {
+					sp.addAssistFilter(new UrlFilter(assist));
+				}
+			} else {
+				sp.addAssistFilter(new UrlFilter());
+			}
 			return sp;
 		}
 	}
@@ -114,12 +128,18 @@ public class SiteProcess {
 		urlSeeds = urls;
 	}
 
-	private void setTargetUrls(String regex) {
-		targetUrlRegex = regex;
+	private void addTargetFilter(UrlFilter filter) {
+		if (targetUrlFilter.contains(filter)) {
+			return;
+		}
+		targetUrlFilter.add(filter);
 	}
 
-	private void setAssistUrls(String regex) {
-		assistUrlRegex = regex;
+	private void addAssistFilter(UrlFilter filter) {
+		if (assistUrlFilter.contains(filter)) {
+			return;
+		}
+		assistUrlFilter.add(filter);
 	}
 
 	private String[] urlSeeds;

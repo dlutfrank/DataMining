@@ -8,7 +8,6 @@ public class SpiderTask implements Runnable{
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		
 	}
 

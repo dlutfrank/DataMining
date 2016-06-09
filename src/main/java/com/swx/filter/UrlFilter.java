@@ -24,6 +24,15 @@ public class UrlFilter implements IFilter<String> {
 	}
 
 	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || !(obj instanceof UrlFilter)) {
+			return false;
+		}
+		UrlFilter filter = (UrlFilter) obj;
+		return mRegex.equals(filter.mRegex);
+	}
+
+	@Override
 	public boolean isValidate(String content) {
 		if (content == null || content.isEmpty()) {
 			return false;
