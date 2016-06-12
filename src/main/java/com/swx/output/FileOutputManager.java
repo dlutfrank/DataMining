@@ -30,8 +30,7 @@ public class FileOutputManager {
 		}
 		synchronized(obj) {
 			if (!isStarted) {
-				new Thread(outputTask).start();
-				isStarted = true;
+				new Thread(outputTask).start();				
 			}
 		}
 	}
@@ -40,6 +39,7 @@ public class FileOutputManager {
 
 		@Override
 		public void run() {
+			isStarted = true;
 			String content = null;
 			while (true) {
 				try {

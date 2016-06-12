@@ -46,6 +46,22 @@ public class Scheduler {
 		}
 	}
 
+	public void addUrls(List<String> urls) {
+		if (urls == null || urls.size() <= 0) {
+			return;
+		}
+		List<String> uniqueUrls = new ArrayList<String>();
+		for(String url : urls) {
+			if(!isAdded(url)) {
+				uniqueUrls.add(url);
+			}
+		}
+		synchronized (obj) {
+			allSites.addAll(uniqueUrls);
+			unvisitedSites.addAll(uniqueUrls);
+		}
+	}
+
 	public void addUrls(String... urls) {
 		if (urls == null || urls.length <= 0) {
 			return;

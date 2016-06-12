@@ -6,7 +6,11 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.swx.analyse.DocumentAnalyser;
+import com.swx.analyse.ZhongChouAnalyser;
+import com.swx.download.JSoupDownloader;
 import com.swx.filter.UrlFilter;
+import com.swx.output.FileOutputManager;
 import com.swx.schedule.Scheduler;
 
 public class SiteProcess {
@@ -14,8 +18,9 @@ public class SiteProcess {
 	private int threadCount;
 	private ExecutorService threadPool;
 	private Scheduler urlScheduler;
-	private List<UrlFilter> targetUrlFilter = new ArrayList<UrlFilter>();
-	private List<UrlFilter> assistUrlFilter = new ArrayList<UrlFilter>();
+	private JSoupDownloader downloader = new JSoupDownloader();
+	private DocumentAnalyser analyser = null;
+	private FileOutputManager output = new FileOutputManager();
 
 	public static class Builder {
 		private int count = DEFAULT_THREAD_COUNT;
@@ -45,20 +50,25 @@ public class SiteProcess {
 		public SiteProcess create() {
 			SiteProcess sp = new SiteProcess(count);
 			sp.initSeeds(urls);
+			List<UrlFilter> targetFilter = new ArrayList<UrlFilter>();
+			List<UrlFilter> assistFilter = new ArrayList<UrlFilter>();
 			if (targetRegex != null && targetRegex.length > 0) {
 				for (String target : targetRegex) {
-					sp.addTargetFilter(new UrlFilter(target));
+					targetFilter.add(new UrlFilter(target));
 				}
 			} else {
-				sp.addTargetFilter(new UrlFilter());
+				targetFilter.add(new UrlFilter());
 			}
 			if (assistRegex != null && assistRegex.length > 0) {
 				for (String assist : assistRegex) {
-					sp.addAssistFilter(new UrlFilter(assist));
+					assistFilter.add(new UrlFilter(assist));
 				}
 			} else {
-				sp.addAssistFilter(new UrlFilter());
+				assistFilter.add(new UrlFilter());
 			}
+			DocumentAnalyser da = new ZhongChouAnalyser(targetFilter,
+					assistFilter);
+			sp.setDocumentAnalyser(da);
 			return sp;
 		}
 	}
@@ -68,10 +78,11 @@ public class SiteProcess {
 		urlScheduler.addUrls(urlSeeds);
 		lastProcessTime = System.currentTimeMillis();
 		String url = null;
-		while (started) {
+		while (started && urlScheduler.getVisitedCount() < 10) {
 			if ((url = urlScheduler.featchUrl()) != null) {
 				lastProcessTime = System.currentTimeMillis();
-				Runnable task = new SpiderTask(url);
+				Runnable task = new SpiderTask(url, urlScheduler, downloader,
+						analyser, output);
 				threadPool.submit(task);
 				try {
 					Thread.sleep(1000);
@@ -95,6 +106,10 @@ public class SiteProcess {
 
 	public void stop() {
 
+	}
+
+	void setDocumentAnalyser(DocumentAnalyser analyser) {
+		this.analyser = analyser;
 	}
 
 	private void stopInner() {
@@ -126,20 +141,6 @@ public class SiteProcess {
 
 	private void initSeeds(String... urls) {
 		urlSeeds = urls;
-	}
-
-	private void addTargetFilter(UrlFilter filter) {
-		if (targetUrlFilter.contains(filter)) {
-			return;
-		}
-		targetUrlFilter.add(filter);
-	}
-
-	private void addAssistFilter(UrlFilter filter) {
-		if (assistUrlFilter.contains(filter)) {
-			return;
-		}
-		assistUrlFilter.add(filter);
 	}
 
 	private String[] urlSeeds;
