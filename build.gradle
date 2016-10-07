@@ -13,4 +13,6 @@ repositories {
 dependencies {
     compile 'org.jsoup:jsoup:1.9.2'
     //compile 'us.codecraft:webmagic-core:0.5.3'
+    
+    testCompile 'junit:junit:4.12'
 }

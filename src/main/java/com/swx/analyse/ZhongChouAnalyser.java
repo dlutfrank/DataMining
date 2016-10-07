@@ -7,15 +7,11 @@ import org.jsoup.nodes.Document;
 
 import com.swx.filter.UrlFilter;
 
-public class ZhongChouAnaylyser extends DocumentAnalyser {
+public class ZhongChouAnalyser extends DocumentAnalyser {
 	private List<UrlFilter> targetUrlFilter = null;
 	private List<UrlFilter> assistUrlFilter = null;
 
-	public ZhongChouAnaylyser() {
-
-	}
-
-	public void init(List<UrlFilter> target, List<UrlFilter> assist) {
+	public ZhongChouAnalyser(List<UrlFilter> target, List<UrlFilter> assist) {
 		targetUrlFilter = target;
 		assistUrlFilter = assist;
 	}
