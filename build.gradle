@@ -14,5 +14,6 @@ dependencies {
     compile 'org.jsoup:jsoup:1.9.2'
     //compile 'us.codecraft:webmagic-core:0.5.3'
     
+    testCompile 'org.mockito:mockito-all:2.0.2-beta'
     testCompile 'junit:junit:4.12'
 }
