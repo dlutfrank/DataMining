@@ -18,25 +18,25 @@ public class FileOutputManager {
 	private long currentPageCount = 0;
 
 	public FileOutputManager() {
-		mQueue = new LinkedBlockingQueue<String>();		
+		mQueue = new LinkedBlockingQueue<String>();
 	}
 
 	public void init(String outputFileName) throws IOException {
 		mFileName = outputFileName;
 		mBuffWriter = new BufferedWriter(new FileWriter(new File(mFileName)));
 	}
-	
+
 	public void setPageLimited(long pageLimited) {
 		this.pageLimited = pageLimited;
 	}
 
 	public void start() {
-		if(isStarted || mBuffWriter == null) {
+		if (isStarted || mBuffWriter == null) {
 			return;
 		}
-		synchronized(obj) {
+		synchronized (obj) {
 			if (!isStarted) {
-				new Thread(outputTask).start();				
+				new Thread(outputTask).start();
 			}
 		}
 	}
@@ -47,14 +47,15 @@ public class FileOutputManager {
 		public void run() {
 			isStarted = true;
 			String content = null;
+			System.out.println("FileOutputManager::run() start");
 			while (true) {
 				try {
 					content = mQueue.take();
 					if (!content.equals(EOF)) {
 						mBuffWriter.write(content);
 						currentPageCount++;
-						if(pageLimited > 0 && currentPageCount >= pageLimited) {
-							stopOutput(true);							
+						if (pageLimited > 0 && currentPageCount >= pageLimited) {
+							stopOutput(true);
 						}
 					} else {
 						if (quitNow || mQueue.isEmpty()) {
@@ -77,8 +78,8 @@ public class FileOutputManager {
 		}
 
 	};
-	
-	public boolean isPageEnough(){
+
+	public boolean isPageEnough() {
 		return pageLimited > 0 && this.currentPageCount >= pageLimited;
 	}
 
@@ -100,7 +101,7 @@ public class FileOutputManager {
 	public boolean addTask(String str) {
 		if (str == null || str.isEmpty()) {
 			return false;
-		}				
+		}
 		mQueue.add(str);
 		return true;
 	}

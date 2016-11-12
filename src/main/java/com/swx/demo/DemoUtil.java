@@ -11,19 +11,37 @@ import org.jsoup.nodes.Document;
 
 import com.swx.SiteProcess;
 import com.swx.data.ZhongChouData;
+import com.swx.data.ZhongChouDetail;
 
 public class DemoUtil {
 	public static final int PAGE_COUNT = 2;
 
 	// http://www.zhongchou.com/browse/p3
 	public static void main(String[] args) {
-		crawl();
+		 crawl();
+//		test();
+	}
+
+	private static void test() {
+		String url = "http://www.zhongchou.com/deal-show/id-288286";
+
+		try {
+			Document doc = Jsoup.connect(url).timeout(3000).get();
+			ZhongChouDetail detail = ZhongChouDetail.parseData(doc);
+			System.out.println(detail.toString());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private static void crawl() {
+		String[] target = { "^http://www\\.zhongchou\\.com/deal-show/id-\\d+$" };
+		String[] assist = { "^http://www\\.zhongchou\\.com/browse(/p[1-9]\\d*)?$",
+				"^http://www\\.zhongchou\\.com/browse/id-\\d+$" };
 		String[] urls = { "http://www.zhongchou.com/browse" };
-		SiteProcess.Builder builder = new SiteProcess.Builder(urls).fileName("zhouchouDetail.txt")
-				.targetUrl("^(http://)?www\\.zhongchou\\.com/browse(/p[1-9]\\d*)?$").pageCount(10);
+		SiteProcess.Builder builder = new SiteProcess.Builder(urls).fileName("zhongchouDetail.txt").targetUrl(target)
+				.assistUrl(assist).pageCount(10);
 		SiteProcess sp = builder.create();
 		if (sp != null) {
 			sp.start();

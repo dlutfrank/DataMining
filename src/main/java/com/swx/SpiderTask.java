@@ -42,10 +42,10 @@ public class SpiderTask implements Runnable {
 				List<String>urls = analyser.extractUrl(result);				
 				s.addUrls(urls);	
 				if(urls != null){
-					System.out.println("SpiderTask::run()"+urls);	
+					System.out.println("SpiderTask::run() urls: "+urls);	
 				}
 				if(str != null) {
-					System.out.println("SpiderTask::run()"+str);					
+					System.out.println("SpiderTask::run() str: "+str);					
 				}				
 				output.addTask(str);				
 			}

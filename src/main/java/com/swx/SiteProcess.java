@@ -2,13 +2,12 @@ package com.swx;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.swx.analyse.DocumentAnalyser;
-import com.swx.analyse.ZhongChouAnalyser;
+import com.swx.analyse.ZhongChouDetailAnalyser;
 import com.swx.download.JSoupDownloader;
 import com.swx.filter.UrlFilter;
 import com.swx.output.FileOutputManager;
@@ -19,7 +18,7 @@ public class SiteProcess {
 	private static final long DEFAULT_PAGE_LIMITED = 10;
 	private int threadCount;
 	private ExecutorService threadPool;
-	private Scheduler urlScheduler = new Scheduler() ;
+	private Scheduler urlScheduler = new Scheduler();
 	private JSoupDownloader downloader = new JSoupDownloader();
 	private DocumentAnalyser analyser = null;
 	private FileOutputManager output = new FileOutputManager();
@@ -52,16 +51,16 @@ public class SiteProcess {
 			this.count = n;
 			return this;
 		}
-		
+
 		public Builder pageCount(long pageCount) {
-			if(pageCount> 0) {
-				this.pageLimited = pageCount;	
-			}			
+			if (pageCount > 0) {
+				this.pageLimited = pageCount;
+			}
 			return this;
 		}
-		
+
 		public Builder fileName(String fileName) {
-			if(fileName != null && !fileName.isEmpty()) {
+			if (fileName != null && !fileName.isEmpty()) {
 				this.fileName = fileName;
 			}
 			return this;
@@ -70,7 +69,7 @@ public class SiteProcess {
 		public SiteProcess create() {
 			SiteProcess sp = new SiteProcess(count);
 			sp.initSeeds(urls);
-			sp.setPageCount(pageLimited);	
+			sp.setPageCount(pageLimited);
 			sp.setOutputFile(fileName);
 			List<UrlFilter> targetFilter = new ArrayList<UrlFilter>();
 			List<UrlFilter> assistFilter = new ArrayList<UrlFilter>();
@@ -86,10 +85,9 @@ public class SiteProcess {
 					assistFilter.add(new UrlFilter(assist));
 				}
 			} else {
-//				assistFilter.add(new UrlFilter());
+				// assistFilter.add(new UrlFilter());
 			}
-			DocumentAnalyser da = new ZhongChouAnalyser(targetFilter,
-					assistFilter);
+			DocumentAnalyser da = new ZhongChouDetailAnalyser(targetFilter, assistFilter);
 			sp.setDocumentAnalyser(da);
 			return sp;
 		}
@@ -97,12 +95,12 @@ public class SiteProcess {
 
 	public void start() {
 		started = true;
-		urlScheduler.addUrls(urlSeeds);		
+		urlScheduler.addUrls(urlSeeds);
 		lastProcessTime = System.currentTimeMillis();
 		String url = null;
 		try {
 			output.init(fileName);
-		} catch (IOException e1) {			
+		} catch (IOException e1) {
 			e1.printStackTrace();
 			return;
 		}
@@ -111,11 +109,10 @@ public class SiteProcess {
 		while (started && !output.isPageEnough()) {
 			if ((url = urlScheduler.featchUrl()) != null) {
 				lastProcessTime = System.currentTimeMillis();
-				Runnable task = new SpiderTask(url, urlScheduler, downloader,
-						analyser, output);
+				Runnable task = new SpiderTask(url, urlScheduler, downloader, analyser, output);
 				threadPool.submit(task);
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(5000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -132,12 +129,15 @@ public class SiteProcess {
 			}
 
 		}
+		if(!threadPool.isShutdown()) {
+			stopInner();
+		}
 	}
-	
+
 	void setPageCount(long pageCount) {
 		this.pageLimited = pageCount;
 	}
-	
+
 	void setOutputFile(String outputName) {
 		this.fileName = outputName;
 	}
@@ -155,7 +155,7 @@ public class SiteProcess {
 			started = false;
 		}
 		threadPool.shutdown();
-	}	
+	}
 
 	private Byte[] obj = new Byte[0];
 
