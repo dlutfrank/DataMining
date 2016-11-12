@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class Scheduler {
 	private HashSet<String> allSites = new HashSet<String>();
@@ -36,11 +34,11 @@ public class Scheduler {
 	public void addUrl(String url) {
 		if (url == null || url.isEmpty()) {
 			return;
-		}
-		if (isAdded(url)) {
-			return;
-		}
+		}		
 		synchronized (obj) {
+			if (isAdded(url)) {
+				return;
+			}
 			allSites.add(url);
 			unvisitedSites.offer(url);
 		}
@@ -50,31 +48,28 @@ public class Scheduler {
 		if (urls == null || urls.size() <= 0) {
 			return;
 		}
-		List<String> uniqueUrls = new ArrayList<String>();
-		for(String url : urls) {
-			if(!isAdded(url)) {
-				uniqueUrls.add(url);
-			}
-		}
 		synchronized (obj) {
-			allSites.addAll(uniqueUrls);
-			unvisitedSites.addAll(uniqueUrls);
+			for(String url : urls) {
+				if(!isAdded(url)) {
+					allSites.add(url);
+					unvisitedSites.add(url);
+				}
+			}
 		}
 	}
 
 	public void addUrls(String... urls) {
 		if (urls == null || urls.length <= 0) {
 			return;
-		}
-		List<String> uniqueUrls = new ArrayList<String>();
-		for (String url : urls) {
-			if (!isAdded(url)) {
-				uniqueUrls.add(url);
-			}
-		}
+		}	
 		synchronized (obj) {
-			allSites.addAll(uniqueUrls);
-			unvisitedSites.addAll(uniqueUrls);
+			for (String url : urls) {
+				if (!isAdded(url)) {					
+					allSites.add(url);
+					unvisitedSites.add(url);
+				}
+			}
+			
 		}
 	}
 

@@ -9,14 +9,30 @@ import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import com.swx.SiteProcess;
 import com.swx.data.ZhongChouData;
 
 public class DemoUtil {
 	public static final int PAGE_COUNT = 2;
 
+	// http://www.zhongchou.com/browse/p3
 	public static void main(String[] args) {
+		crawl();
+	}
+
+	private static void crawl() {
+		String[] urls = { "http://www.zhongchou.com/browse" };
+		SiteProcess.Builder builder = new SiteProcess.Builder(urls).fileName("zhouchouDetail.txt")
+				.targetUrl("^(http://)?www\\.zhongchou\\.com/browse(/p[1-9]\\d*)?$").pageCount(10);
+		SiteProcess sp = builder.create();
+		if (sp != null) {
+			sp.start();
+		}
+	}
+
+	private static void simpleCrawl() {
 		String url = null;
-		File file = new File("zhongchou.txt");		
+		File file = new File("zhongchou.txt");
 		BufferedWriter bf = null;
 		try {
 			bf = new BufferedWriter(new FileWriter(file));
@@ -49,11 +65,9 @@ public class DemoUtil {
 				e.printStackTrace();
 			}
 		}
-
 	}
 
-	private static List<ZhongChouData> getZhongChouData(String url)
-			throws IOException {
+	private static List<ZhongChouData> getZhongChouData(String url) throws IOException {
 		Document doc = Jsoup.connect(url).timeout(3000).get();
 		return ZhongChouData.parseData(doc);
 	}

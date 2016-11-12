@@ -38,15 +38,21 @@ public class SpiderTask implements Runnable {
 
 			@Override
 			public void onSuccess(Document result) {
-				String str = analyser.analyse(result);
-				List<String>urls = analyser.extractUrl(result);
-				s.addUrls(urls);				
+				String str = analyser.analyse(result,url);
+				List<String>urls = analyser.extractUrl(result);				
+				s.addUrls(urls);	
+				if(urls != null){
+					System.out.println("SpiderTask::run()"+urls);	
+				}
+				if(str != null) {
+					System.out.println("SpiderTask::run()"+str);					
+				}				
 				output.addTask(str);				
 			}
 
 			@Override
 			public void onFaild(ErrorCode code, String msg) {
-
+				System.out.println("SpiderTask::run()"+code.toString() + msg);
 			}
 
 		});

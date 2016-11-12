@@ -26,6 +26,7 @@ public class JSoupDownloader implements IPageDownload<Document> {
 
 		Document doc = null;
 		try {
+			System.out.println("JSoupDownloader::downloadPage" + url);
 			doc = Jsoup.connect(url).timeout(3000).get();
 		} catch (IOException e) {
 			e.printStackTrace();
