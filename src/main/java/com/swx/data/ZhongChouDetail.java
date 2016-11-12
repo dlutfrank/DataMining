@@ -12,7 +12,7 @@ public class ZhongChouDetail {
 	public static final String ITEM_LINK_URL_ATTR = "href";
 	public static final String ITEM_B = "b";
 	public static final String ITEM_IMG = "img";
-	public static final String ITEM_SRC = "src";
+	public static final String ITEM_DATA_SRC = "data-src";
 
 	// 头部
 	public static final String ITEM_HEAD = "head";
@@ -49,7 +49,7 @@ public class ZhongChouDetail {
 	public String progress;
 	public String target;
 	public String group;
-	public String addr;
+	public List<String> addr = new LinkedList<String>();;
 	public List<String> category = new LinkedList<String>();
 
 	// 项目详情表格
@@ -67,6 +67,8 @@ public class ZhongChouDetail {
 	public static final String ITEM_PROJECT_DESC_BOX = "xmxqBox";
 
 	public List<String> images = new LinkedList<String>();
+	public static final String ITEM_PROJECT_HAS_VIDEO = "media-time";
+	public boolean hasVideo = false;
 
 	// 分隔符
 	public static final String ITEM_SPLIT_TAG = "||";
@@ -76,7 +78,7 @@ public class ZhongChouDetail {
 
 	}
 
-	public String outline() {
+	public static String outline() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("title");
 		sb.append(ITEM_SPLIT_TAG);
@@ -109,6 +111,8 @@ public class ZhongChouDetail {
 		sb.append("group");
 		sb.append(ITEM_SPLIT_TAG);
 		sb.append("addr");
+		sb.append(ITEM_SPLIT_TAG);
+		sb.append("image");
 		sb.append("\n");
 		return sb.toString();
 	}
@@ -148,7 +152,17 @@ public class ZhongChouDetail {
 		sb.append(ITEM_SPLIT_TAG);
 		sb.append(group);
 		sb.append(ITEM_SPLIT_TAG);
-		sb.append(addr);
+		for (String s : addr) {
+			sb.append(s);
+			sb.append(CATEGORY_SPLITE_TAG);
+		}
+		sb.append(ITEM_SPLIT_TAG);
+		for (String s : images) {
+			sb.append(s);
+			sb.append(CATEGORY_SPLITE_TAG);
+		}
+		sb.append(ITEM_SPLIT_TAG);
+		sb.append(hasVideo);
 		sb.append("\n");
 		return sb.toString();
 	}
@@ -198,13 +212,17 @@ public class ZhongChouDetail {
 			}
 		}
 		// 项目状态数据
-		eleGroup = doc.getElementsByTag(ITEM_PROJECT_STATE).first();
+		eleGroup = doc.getElementsByClass(ITEM_PROJECT_STATE).first();
 		if (eleGroup != null) {
 			eles = eleGroup.getElementsByClass(ITEM_DETAIL_VALUE_CLASS);
 			if (eles != null && eles.size() >= 3) {
 				result.votes = eles.get(0).text();
 				result.money = eles.get(1).text();
 				result.progress = eles.get(2).text();
+			}
+			ele = eleGroup.getElementsByClass(ITEM_PROJECT_HEART).first();
+			if (ele != null) {
+				result.heart = ele.text();
 			}
 			ele = eleGroup.getElementsByClass(ITEM_TARGET_BOX).first();
 			if (ele != null) {
@@ -216,29 +234,39 @@ public class ZhongChouDetail {
 			ele = eleGroup.getElementsByClass(ITEM_PROJECT_DETAIL_RIGHT_BOX).first();
 			if (ele != null) {
 				Element el = null;
+				Element child = null;
 				ele = ele.getElementsByClass(ITEM_DETAIL_CATEGORY_BOX).first();
 				if (ele != null) {
-					el = ele.getElementsByClass(ITEM_DETAIL_GROUP_CLASS).first();
+					el = ele.getElementsByClass(ITEM_DETAIL_GROUP_BOX).first();
 					if (el != null) {
-						result.group = el.text();
+						child = el.child(0);
+						if (child != null) {
+							result.group = child.text();
+						}
 					}
-				}
-				ele = ele.getElementsByClass(ITEM_PROJECT_ADDR).first();
-				if (ele != null) {
-					el = ele.getElementsByTag(ITEM_LINK_TAG).first();
+					el = ele.getElementsByClass(ITEM_PROJECT_ADDR).first();
 					if (el != null) {
-						result.group = el.text();
+						eles = el.getElementsByTag(ITEM_LINK_TAG);
+						if (eles != null) {
+							String name = null;
+							for (Element element : eles) {
+								name = element.text();
+								if (name != null && !name.isEmpty()) {
+									result.addr.add(name);
+								}
+							}
+						}
 					}
-				}
-				ele = ele.getElementsByClass(ITEM_PROJECT_LABEL).first();
-				if (ele != null) {
-					eles = ele.getElementsByTag(ITEM_LINK_TAG);
-					if (eles != null) {
-						String name = null;
-						for (Element e : eles) {
-							name = e.text();
-							if (name != null && !name.isEmpty()) {
-								result.category.add(name);
+					el = ele.getElementsByClass(ITEM_PROJECT_LABEL).first();
+					if (el != null) {
+						eles = el.getElementsByTag(ITEM_LINK_TAG);
+						if (eles != null) {
+							String name = null;
+							for (Element e : eles) {
+								name = e.text();
+								if (name != null && !name.isEmpty()) {
+									result.category.add(name);
+								}
 							}
 						}
 					}
@@ -274,12 +302,17 @@ public class ZhongChouDetail {
 			eles = eleGroup.getElementsByTag(ITEM_IMG);
 			if (eles != null) {
 				for (Element el : eles) {
-					attribute = el.attr(ITEM_SRC);
+					attribute = el.attr(ITEM_DATA_SRC);
 					if (attribute != null && !attribute.isEmpty()) {
 						result.images.add(attribute);
 					}
 				}
 			}
+		}
+
+		eleGroup = doc.getElementsByClass(ITEM_PROJECT_HAS_VIDEO).first();
+		if (eleGroup != null) {
+			result.hasVideo = true;
 		}
 		return result;
 	}

@@ -18,16 +18,17 @@ public class DemoUtil {
 
 	// http://www.zhongchou.com/browse/p3
 	public static void main(String[] args) {
-		 crawl();
-//		test();
+		// crawl();
+		test();
 	}
 
 	private static void test() {
 		String url = "http://www.zhongchou.com/deal-show/id-288286";
-
+		String videoUrl = "http://www.zhongchou.com/deal-show/id-354511";
 		try {
-			Document doc = Jsoup.connect(url).timeout(3000).get();
+			Document doc = Jsoup.connect(videoUrl).timeout(3000).get();
 			ZhongChouDetail detail = ZhongChouDetail.parseData(doc);
+			System.out.print(ZhongChouDetail.outline());
 			System.out.println(detail.toString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
