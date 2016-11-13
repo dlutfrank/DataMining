@@ -24,6 +24,7 @@ public class SiteProcess {
 	private FileOutputManager output = new FileOutputManager();
 	private long pageLimited = 1000l;
 	private String fileName;
+	private static volatile Object syncObj = new Object();
 
 	public static class Builder {
 		private int count = DEFAULT_THREAD_COUNT;
@@ -108,7 +109,9 @@ public class SiteProcess {
 		output.start();
 		while (started && !output.isPageEnough()) {
 			if ((url = urlScheduler.featchUrl()) != null) {
-				lastProcessTime = System.currentTimeMillis();
+				synchronized (syncObj) {
+					lastProcessTime = System.currentTimeMillis();
+				}
 				Runnable task = new SpiderTask(url, urlScheduler, downloader, analyser, output);
 				threadPool.submit(task);
 				try {
@@ -121,7 +124,7 @@ public class SiteProcess {
 					stopInner();
 				} else {
 					try {
-						Thread.sleep(5000);
+						Thread.sleep(2000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -129,7 +132,7 @@ public class SiteProcess {
 			}
 
 		}
-		if(!threadPool.isShutdown()) {
+		if (!threadPool.isShutdown()) {
 			stopInner();
 		}
 	}
@@ -155,6 +158,7 @@ public class SiteProcess {
 			started = false;
 		}
 		threadPool.shutdown();
+		output.stopOutput();
 	}
 
 	private Byte[] obj = new Byte[0];

@@ -33,7 +33,7 @@ public class ZhongChouDetailAnalyser extends DocumentAnalyser {
 				ZhongChouDetail data = ZhongChouDetail.parseData(content);
 				if (data != null) {
 					String result = data.toString();
-					System.out.println("ZhongChouDetailAnalyser::analyser result:" + result);
+					System.out.println("ZhongChouDetailAnalyser::analyser success:");
 					return result;
 				} else {
 					System.out.println("ZhongChouDetailAnalyser::analyser failed:");

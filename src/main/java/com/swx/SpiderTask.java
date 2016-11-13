@@ -18,8 +18,8 @@ public class SpiderTask implements Runnable {
 	private DocumentAnalyser analyser;
 	private FileOutputManager output;
 
-	public SpiderTask(String url, Scheduler s, JSoupDownloader downloader,
-			DocumentAnalyser analyser, FileOutputManager output) {
+	public SpiderTask(String url, Scheduler s, JSoupDownloader downloader, DocumentAnalyser analyser,
+			FileOutputManager output) {
 		this.url = url;
 		this.s = s;
 		this.downloader = downloader;
@@ -29,30 +29,30 @@ public class SpiderTask implements Runnable {
 
 	@Override
 	public void run() {
-		if (url == null || url.isEmpty() || s == null || downloader == null
-				|| analyser == null || output == null) {
+		if (url == null || url.isEmpty() || s == null || 
+				downloader == null || analyser == null || output == null) {
 			return;
 		}
-		System.out.println(url);
+		// System.out.println(url);
 		downloader.downloadPage(url, new Callback<Document>() {
 
 			@Override
 			public void onSuccess(Document result) {
-				String str = analyser.analyse(result,url);
-				List<String>urls = analyser.extractUrl(result);				
-				s.addUrls(urls);	
-				if(urls != null){
-					System.out.println("SpiderTask::run() urls: "+urls);	
+				String str = analyser.analyse(result, url);
+				List<String> urls = analyser.extractUrl(result);
+				s.addUrls(urls);
+				if (urls != null) {
+					System.out.println("SpiderTask::run() urls: " + urls);
 				}
-				if(str != null) {
-					System.out.println("SpiderTask::run() str: "+str);					
-				}				
-				output.addTask(str);				
+				if (str != null) {
+					System.out.println("SpiderTask::run() str: " + str);
+				}
+				output.addTask(str);
 			}
 
 			@Override
 			public void onFaild(ErrorCode code, String msg) {
-				System.out.println("SpiderTask::run()"+code.toString() + msg);
+				System.out.println("SpiderTask::run()" + code.toString() + msg);
 			}
 
 		});

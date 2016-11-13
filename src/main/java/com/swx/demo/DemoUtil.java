@@ -18,8 +18,8 @@ public class DemoUtil {
 
 	// http://www.zhongchou.com/browse/p3
 	public static void main(String[] args) {
-		// crawl();
-		test();
+		crawl();
+		// test();
 	}
 
 	private static void test() {
@@ -39,10 +39,10 @@ public class DemoUtil {
 	private static void crawl() {
 		String[] target = { "^http://www\\.zhongchou\\.com/deal-show/id-\\d+$" };
 		String[] assist = { "^http://www\\.zhongchou\\.com/browse(/p[1-9]\\d*)?$",
-				"^http://www\\.zhongchou\\.com/browse/id-\\d+$" };
-		String[] urls = { "http://www.zhongchou.com/browse" };
-		SiteProcess.Builder builder = new SiteProcess.Builder(urls).fileName("zhongchouDetail.txt").targetUrl(target)
-				.assistUrl(assist).pageCount(10);
+				"^http://www\\.zhongchou\\.com/browse/id-\\d+$" };		
+		String[] urls = { "http://www.zhongchou.com/browse" };		
+		SiteProcess.Builder builder = new SiteProcess.Builder(urls).fileName("zhongchouDetail.txt")
+				.targetUrl(target).assistUrl(assist).pageCount(6000);
 		SiteProcess sp = builder.create();
 		if (sp != null) {
 			sp.start();
