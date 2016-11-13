@@ -1,5 +1,14 @@
 apply plugin:'java'
 
+apply plugin: 'application'
+ 
+mainClassName = 'com.swx.demo.DemoUtil'
+
+jar{
+      baseName = 'Zhongchou'
+      version =  '2.0'
+}
+
 repositories {
 	jcenter()
 	

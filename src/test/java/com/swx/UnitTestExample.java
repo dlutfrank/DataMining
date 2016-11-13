@@ -27,7 +27,7 @@ public class UnitTestExample {
 	
 	@Test
 	public void testSubExample() {
-		assertEquals(3,5-3);
+		assertEquals(2,5-3);
 	}
 	
 	@After

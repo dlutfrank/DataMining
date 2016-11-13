@@ -14,7 +14,7 @@ import com.swx.output.FileOutputManager;
 import com.swx.schedule.Scheduler;
 
 public class SiteProcess {
-	private static final int DEFAULT_THREAD_COUNT = 1;
+	private static final int DEFAULT_THREAD_COUNT = 8;
 	private static final long DEFAULT_PAGE_LIMITED = 10;
 	private int threadCount;
 	private ExecutorService threadPool;
@@ -115,7 +115,7 @@ public class SiteProcess {
 				Runnable task = new SpiderTask(url, urlScheduler, downloader, analyser, output);
 				threadPool.submit(task);
 				try {
-					Thread.sleep(5000);
+					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -124,7 +124,7 @@ public class SiteProcess {
 					stopInner();
 				} else {
 					try {
-						Thread.sleep(2000);
+						Thread.sleep(5000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}

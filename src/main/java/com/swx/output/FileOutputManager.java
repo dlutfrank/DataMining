@@ -54,6 +54,7 @@ public class FileOutputManager {
 					if (!content.equals(EOF)) {
 						mBuffWriter.write(content);
 						currentPageCount++;
+						System.out.println("FileOutputManager:: page count: " + currentPageCount);
 						if (pageLimited > 0 && currentPageCount >= pageLimited) {
 							stopOutput(true);
 						}

@@ -29,7 +29,7 @@ public class ZhongChouDetailAnalyser extends DocumentAnalyser {
 		}
 		for (UrlFilter filter : targetUrlFilter) {
 			if (filter.isValidate(url)) {
-				System.out.println("ZhongChouDetailAnalyser::analyser" + url);
+//				System.out.println("ZhongChouDetailAnalyser::analyser" + url);
 				ZhongChouDetail data = ZhongChouDetail.parseData(content);
 				if (data != null) {
 					String result = data.toString();
