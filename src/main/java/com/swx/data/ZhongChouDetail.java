@@ -49,6 +49,7 @@ public class ZhongChouDetail {
 	public String progress;
 	public String target;
 	public String group;
+	public String dayLeft;
 	public List<String> addr = new LinkedList<String>();;
 	public List<String> category = new LinkedList<String>();
 
@@ -65,8 +66,7 @@ public class ZhongChouDetail {
 
 	// 项目描述区域
 	public static final String ITEM_PROJECT_DESC_BOX = "xmxqBox";
-
-	public List<String> images = new LinkedList<String>();
+	public int imageCount = 0;
 	public static final String ITEM_PROJECT_HAS_VIDEO = "media-time";
 	public boolean hasVideo = false;
 
@@ -108,63 +108,105 @@ public class ZhongChouDetail {
 		sb.append(ITEM_SPLIT_TAG);
 		sb.append("target");
 		sb.append(ITEM_SPLIT_TAG);
+		sb.append("dayLeft");
+		sb.append(ITEM_SPLIT_TAG);
 		sb.append("group");
 		sb.append(ITEM_SPLIT_TAG);
 		sb.append("addr");
 		sb.append(ITEM_SPLIT_TAG);
 		sb.append("image");
+		sb.append(ITEM_SPLIT_TAG);
+		sb.append("hasVideo");
 		sb.append("\n");
 		return sb.toString();
 	}
 
+	private String fs(String src) {
+		if (src == null || src.isEmpty()) {
+			return "null";
+		}
+		return src;
+	}
+
+	private String fstrim(String src) {
+		if (src == null || src.isEmpty()) {
+			return "null";
+		}
+		return src.replaceAll("\r|\n|\\|", "");
+	}
+
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(title);
+		sb.append(fstrim(title));
 		sb.append(ITEM_SPLIT_TAG);
-		sb.append(keyword);
+		sb.append(fstrim(keyword));
 		sb.append(ITEM_SPLIT_TAG);
-		sb.append(desc);
+		sb.append(fstrim(desc));
 		sb.append(ITEM_SPLIT_TAG);
-		sb.append(person);
+		sb.append((person));
 		sb.append(ITEM_SPLIT_TAG);
-		sb.append(personPage);
+		sb.append((personPage));
 		sb.append(ITEM_SPLIT_TAG);
-		sb.append(projectUpdate);
+		sb.append((projectUpdate));
 		sb.append(ITEM_SPLIT_TAG);
-		sb.append(projectComment);
+		sb.append((projectComment));
 		sb.append(ITEM_SPLIT_TAG);
-		sb.append(projectSupportRecord);
+		sb.append((projectSupportRecord));
 		sb.append(ITEM_SPLIT_TAG);
-		for (String s : category) {
-			sb.append(s);
-			sb.append(CATEGORY_SPLITE_TAG);
+		if (category != null && !category.isEmpty()) {
+			for (String s : category) {
+				sb.append(fs(s));
+				sb.append(CATEGORY_SPLITE_TAG);
+			}
+		} else {
+			sb.append("null");
 		}
 		sb.append(ITEM_SPLIT_TAG);
-		sb.append(heart);
+		sb.append(fs(heart));
 		sb.append(ITEM_SPLIT_TAG);
-		sb.append(money);
+		sb.append(fs(money));
 		sb.append(ITEM_SPLIT_TAG);
-		sb.append(votes);
+		sb.append(fs(votes));
 		sb.append(ITEM_SPLIT_TAG);
-		sb.append(progress);
+		sb.append(fs(progress));
 		sb.append(ITEM_SPLIT_TAG);
-		sb.append(target);
+		sb.append(fs(target));
 		sb.append(ITEM_SPLIT_TAG);
-		sb.append(group);
+		sb.append(dayLeft);
 		sb.append(ITEM_SPLIT_TAG);
-		for (String s : addr) {
-			sb.append(s);
-			sb.append(CATEGORY_SPLITE_TAG);
+		sb.append(fs(group));
+		sb.append(ITEM_SPLIT_TAG);
+		if (addr != null && !addr.isEmpty()) {
+			for (String s : addr) {
+				sb.append(fs(s));
+				sb.append(CATEGORY_SPLITE_TAG);
+			}
+		} else {
+			sb.append("null");
 		}
 		sb.append(ITEM_SPLIT_TAG);
-		for (String s : images) {
-			sb.append(s);
-			sb.append(CATEGORY_SPLITE_TAG);
-		}
+		sb.append(imageCount);
 		sb.append(ITEM_SPLIT_TAG);
 		sb.append(hasVideo);
 		sb.append("\n");
 		return sb.toString();
+	}
+
+	public static ZhongChouDetail parse(Document doc) {
+		ZhongChouDetail result = null;
+		if (doc == null) {
+			System.out.println("ZhongChouDetail::parseData, doc is null");
+			return null;
+		}
+		Element el = null;
+		result = new ZhongChouDetail();
+		result.title = doc.select(".jlxqTitle_h3").text();
+		el = doc.select("div.faqipeeson span.txt2 a").first();
+		if (el != null) {
+			result.person = el.text();
+			result.personPage = el.attr("href");
+		}
+		return result;
 	}
 
 	public static ZhongChouDetail parseData(Document doc) {
@@ -194,7 +236,7 @@ public class ZhongChouDetail {
 					if (attribute.equals(ITEM_KEYWORDS)) {
 						result.keyword = attr;
 					} else if (attribute.equals(ITEM_DESCRIPTION)) {
-						result.desc = attr;
+						result.desc = attr.replaceAll("\n", " ");
 					}
 				}
 			}
@@ -226,9 +268,15 @@ public class ZhongChouDetail {
 			}
 			ele = eleGroup.getElementsByClass(ITEM_TARGET_BOX).first();
 			if (ele != null) {
-				Element el = ele.getElementsByTag(ITEM_B).first();
+				Element left = ele.getElementsByClass("leftSpan").first();
+				Element right = ele.getElementsByClass("rightSpan").first();
+				Element el = right.getElementsByTag(ITEM_B).first();
 				if (el != null) {
 					result.target = el.text();
+				}
+				el = left.getElementsByTag(ITEM_B).first();
+				if (el != null) {
+					result.dayLeft = el.text();
 				}
 			}
 			ele = eleGroup.getElementsByClass(ITEM_PROJECT_DETAIL_RIGHT_BOX).first();
@@ -272,8 +320,7 @@ public class ZhongChouDetail {
 					}
 				}
 			}
-		}
-
+		}	
 		// 项目详情表格数据解析
 		eleGroup = doc.getElementById(ITEM_PROJECT_DETAIL);
 		if (eleGroup != null) {
@@ -301,12 +348,14 @@ public class ZhongChouDetail {
 		if (eleGroup != null) {
 			eles = eleGroup.getElementsByTag(ITEM_IMG);
 			if (eles != null) {
+				int count = 0;
 				for (Element el : eles) {
 					attribute = el.attr(ITEM_DATA_SRC);
 					if (attribute != null && !attribute.isEmpty()) {
-						result.images.add(attribute);
+						count++;
 					}
 				}
+				result.imageCount = count;
 			}
 		}
 

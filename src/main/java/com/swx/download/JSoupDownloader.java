@@ -2,6 +2,7 @@ package com.swx.download;
 
 import java.io.IOException;
 
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -27,7 +28,21 @@ public class JSoupDownloader implements IPageDownload<Document> {
 		Document doc = null;
 		try {
 			System.out.println("JSoupDownloader::downloadPage" + url);
-			doc = Jsoup.connect(url).timeout(3000).get();
+			doc = Jsoup.connect(url).timeout(10000).get();
+		} catch (HttpStatusException ex) {
+			ex.printStackTrace();
+			if (ex.getStatusCode() == 403) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (callback != null) {
+				callback.onFaild(ErrorCode.IO_ERROR, ex.toString());
+			}
+			return;
 		} catch (IOException e) {
 			e.printStackTrace();
 			if (callback != null) {

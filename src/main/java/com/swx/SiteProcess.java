@@ -115,7 +115,7 @@ public class SiteProcess {
 				Runnable task = new SpiderTask(url, urlScheduler, downloader, analyser, output);
 				threadPool.submit(task);
 				try {
-					Thread.sleep(500);
+					Thread.sleep(800);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

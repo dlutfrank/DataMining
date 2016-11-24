@@ -20,9 +20,11 @@ repositories {
 }
 
 dependencies {
+	compile fileTree(dir:'libs/jar',include:['*.jar'])
     compile 'org.jsoup:jsoup:1.9.2'
+    compile 'org.mongodb:mongodb-driver:3.3.0'
     //compile 'us.codecraft:webmagic-core:0.5.3'
-    
+    compile files('libs/ansj_seg-5.0.1-all-in-one.jar')  
     testCompile 'org.mockito:mockito-all:2.0.2-beta'
     testCompile 'junit:junit:4.12'
 }

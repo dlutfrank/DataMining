@@ -6,6 +6,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
+
 public class FileOutputManager {
 	private static final String EOF = "com.swx.output.EOFEOFEOFEOF";
 	private LinkedBlockingQueue<String> mQueue;
@@ -19,6 +23,8 @@ public class FileOutputManager {
 
 	public FileOutputManager() {
 		mQueue = new LinkedBlockingQueue<String>();
+//		MongoClient mongoClient = new MongoClient("localhost",27017);
+//		MongoDatabase mongoDatabase = mongoClient.getDatabase("mycol");		
 	}
 
 	public void init(String outputFileName) throws IOException {
