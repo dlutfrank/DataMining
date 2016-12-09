@@ -1,30 +1,31 @@
-apply plugin:'java'
+apply plugin: 'java'
 
 apply plugin: 'application'
- 
+
 mainClassName = 'com.swx.demo.DemoUtil'
 
-jar{
-      baseName = 'Zhongchou'
-      version =  '2.0'
+jar {
+    baseName = 'Zhongchou'
+    version = '2.0'
 }
 
 repositories {
-	jcenter()
-	
-	flatDir(dirs: "$projectDir/libs")	
+    jcenter()
+
+    flatDir(dirs: "$projectDir/libs")
     //maven {
-        //url "http:\\maven.petrikainulainen.net\repo"
+    //url "http:\\maven.petrikainulainen.net\repo"
     //}
-    
+
 }
 
 dependencies {
-	compile fileTree(dir:'libs/jar',include:['*.jar'])
+    compile fileTree(dir: 'libs/jar', include: ['*.jar'])
     compile 'org.jsoup:jsoup:1.9.2'
     compile 'org.mongodb:mongodb-driver:3.3.0'
+    //compile 'org.apache.httpcomponents:httpclient:4.3.6'
     //compile 'us.codecraft:webmagic-core:0.5.3'
-    compile files('libs/ansj_seg-5.0.1-all-in-one.jar')  
+    //compile files('libs/ansj_seg-5.0.1-all-in-one.jar')  
     testCompile 'org.mockito:mockito-all:2.0.2-beta'
     testCompile 'junit:junit:4.12'
 }
